@@ -14,56 +14,53 @@ class TPQueue {
   ITEM* head;
   ITEM* tail;
   ITEM* create(T data) {
-    ITEM* it = new ITEM;
-    it->data = data;
-    it->next = nullptr;
-    return it;
+    ITEM* t = new ITEM;
+    t->data = data;
+    t->next = nullptr;
+    return t;
   }
 
  public:
   TPQueue() : head(nullptr), tail(nullptr) {}
-  ~TPQueue();
-  while (head) pop();
-}
+  ~TPQueue() {
+    while (head) pop();
+  }
 
-void
-push(const T& data)
-{
-  if (tail && head) {
-    ITEM* temp = head;
-    if (temp->data.prior < data.prior) {
-      temp = create(data);
-      temp->next = head;
-      head = temp;
-    } else {
-      while (temp->next) {
-        if (temp->next->data.prior < data.prior) {
-          ITEM* t = create(data);
-          t->next = temp->next;
-          temp->next = t;
-          break;
-        } else {
-          temp = temp->next;
+  void push(const T& data) {
+    if (tail && head) {
+      ITEM* temp = head;
+      if (temp->data.prior < data.prior) {
+        temp = create(data);
+        temp->next = head;
+        head = temp;
+      } else {
+        while (temp->next) {
+          if (temp->next->data.prior < data.prior) {
+            ITEM* t = create(data);
+            t->next = temp->next;
+            temp->next = t;
+            break;
+          } else {
+            temp = temp->next;
+          }
         }
       }
+      if (!temp->next) {
+        tail->next = create(data);
+        tail = tail->next;
+      }
+    } else {
+      head = create(data);
+      tail = head;
     }
-    if (!temp->next) {
-      tail->next = create(data);
-      tail = tail->next;
-    }
-  } else {
-    head = create(data);
-    tail = head;
   }
-}
-
-T pop() {
-  ITEM* temp = head->next;
-  T data = head->data;
-  delete head;
-  head = temp;
-  return data;
-}
+  T pop() {
+    ITEM* temp = head->next;
+    T data = head->data;
+    delete head;
+    head = temp;
+    return data;
+  }
 };
 
 struct SYM {
@@ -71,4 +68,4 @@ struct SYM {
   int prior;
 };
 
-#endif  // INCLUDE_TPQUEUE_H_
+#endif  // INCLUDE_TPQUEUE_H
