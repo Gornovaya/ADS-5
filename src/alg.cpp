@@ -11,25 +11,24 @@ class TPQueue {
   };
 
  private:
-  TPQueue::ITEM* create(const T&);
   ITEM* head;
   ITEM* tail;
-};
+  ITEM* create(T data) {
+    ITEM* it = new ITEM;
+    it->data = data;
+    it->next = nullptr;
+    return it;
+  }
 
-TPQueue::ITEM* TPQueue<T>::create(const T& data) {
-  ITEM* item = new ITEM;
-  item−> data = data;
-  item−> next = nullptr;
-  return item;
+ public:
+  TPQueue() : head(nullptr), tail(nullptr) {}
+  ~TPQueue();
+  while (head) pop();
 }
 
-public:
-TPQueue() : head(nullptr), tail(nullptr) {}
-~TPQueue();
-while (head) pop();
-}
-
-void push(const T& data) {
+void
+push(const T& data)
+{
   if (tail && head) {
     ITEM* temp = head;
     if (temp->data.prior < data.prior) {
@@ -65,8 +64,7 @@ T pop() {
   head = temp;
   return data;
 }
-}
-;
+};
 
 struct SYM {
   char ch;
