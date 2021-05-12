@@ -2,70 +2,67 @@
 #ifndef INCLUDE_TPQUEUE_H_
 #define INCLUDE_TPQUEUE_H_
 #include <cassert>
-
-template <typename T>
+template<typename T>
 class TPQueue {
   struct ITEM {
     T data;
-    ITEM* next;
+    ITEM *next;
   };
 
  private:
-  ITEM* first;
-  ITEM* finish;
-  ITEM* create(T data) {
-    ITEM* t = new ITEM;
+  ITEM *head;
+  ITEM *tail;
+  ITEM *create(T data) {
+    ITEM *t = new ITEM;
     t->data = data;
     t->next = nullptr;
     return t;
   }
 
  public:
-  TPQueue() : first(nullptr), finish(nullptr) {}
+  TPQueue() :head(nullptr), tail(nullptr) {}
   ~TPQueue() {
-    while (first) pop();
+    while (head)
+      pop();
   }
-
   void push(const T &data) {
-    if (finish && first) {
-      ITEM* val = first;
-      if (val->data.prior < data.prior) {
-        val = create(data);
-        val->next = first;
-        first = val;
+    if (tail && head) {
+      ITEM *temp = head;
+      if (temp->data.prior < data.prior) {
+        temp = create(data);
+        temp->next = head;
+        head = temp;
       } else {
-        while (val->next) {
-          if (val->next->data.prior < data.prior) {
-            ITEM* t = create(data);
-            t->next = val->next;
-            val->next = t;
+        while (temp->next) {
+          if (temp->next->data.prior < data.prior) {
+            ITEM *t = create(data);
+            t->next = temp->next;
+            temp->next = t;
             break;
           } else {
-            val = val->next;
+            temp = temp->next;
           }
         }
       }
-      if (!val->next) {
-        finish->next = create(data);
-        finish = finish->next;
+      if (!temp->next) {
+        tail->next = create(data);
+        tail = tail->next;
       }
     } else {
-      first = create(data);
-      finish = first;
+      head = create(data);
+      tail = head;
     }
   }
   T pop() {
-    ITEM* val = first->next;
-    T data = first->data;
-    delete first;
-    first = val;
+    ITEM *temp = head->next;
+    T data = head->data;
+    delete head;
+    head = temp;
     return data;
   }
 };
-
 struct SYM {
   char ch;
   int prior;
 };
-
-#endif  // INCLUDE_TPQUEUE_H
+#endif // INCLUDE_TPQUEUE_H_
