@@ -11,8 +11,8 @@ class TPQueue {
   };
 
  private:
-  ITEM* head;
-  ITEM* tail;
+  ITEM* first;
+  ITEM* finish;
   ITEM* create(T data) {
     ITEM* t = new ITEM;
     t->data = data;
@@ -21,44 +21,44 @@ class TPQueue {
   }
 
  public:
-  TPQueue() : head(nullptr), tail(nullptr) {}
+  TPQueue() : first(nullptr), finish(nullptr) {}
   ~TPQueue() {
-    while (head) pop();
+    while (first) pop();
   }
 
-  void push(const T& data) {
-    if (tail && head) {
-      ITEM* temp = head;
-      if (temp->data.prior < data.prior) {
-        temp = create(data);
-        temp->next = head;
-        head = temp;
+  void push(const T &data) {
+    if (finish && first) {
+      ITEM* val = first;
+      if (val->data.prior < data.prior) {
+        val = create(data);
+        val->next = first;
+        first = val;
       } else {
-        while (temp->next) {
-          if (temp->next->data.prior < data.prior) {
+        while (val->next) {
+          if (val->next->data.prior < data.prior) {
             ITEM* t = create(data);
-            t->next = temp->next;
-            temp->next = t;
+            t->next = val->next;
+            val->next = t;
             break;
           } else {
-            temp = temp->next;
+            val = val->next;
           }
         }
       }
-      if (!temp->next) {
-        tail->next = create(data);
-        tail = tail->next;
+      if (!val->next) {
+        finish->next = create(data);
+        finish = finish->next;
       }
     } else {
-      head = create(data);
-      tail = head;
+      first = create(data);
+      finish = first;
     }
   }
   T pop() {
-    ITEM* temp = head->next;
-    T data = head->data;
-    delete head;
-    head = temp;
+    ITEM* val = first->next;
+    T data = first->data;
+    delete first;
+    first = val;
     return data;
   }
 };
