@@ -5,59 +5,66 @@
 
 template <typename T>
 class TPQueue {
- private:
   struct ITEM {
     T data;
-    ITEM* next;
-    item->next = nullptr;
-    item->prev = prev;
-    return item;
+    ITEM *next;
+  };
+
+ private:
+  ITEM *head;
+  ITEM *tail;
+  ITEM *create(T data) {
+    ITEM *t = new ITEM;
+    t->data = data;
+    t->next = nullptr;
+    return t;
   }
 
-  public : TPQueue()
-      : head(nullptr), tail(nullptr) {
-  }
+ public:
+  TPQueue() : head(nullptr), tail(nullptr) {}
   ~TPQueue() {
     while (head) pop();
   }
-  void push(const T& data) {
+  void push(const T &data) {
     if (tail && head) {
-      ITEM* current = tail;
-      while (current && data.prior > (current->data).prior) {
-        current = current->prev;
-      }
-      if (current) {
-        ITEM* temp = current->next;
-        current->next = create(data, current);
-        current = current->next;
-        current->next = temp;
-        if (temp)
-          temp->prev = current;
-        else
-          tail = current;
+      ITEM *temp = head;
+      if (temp->data.prior < data.prior) {
+        temp = create(data);
+        temp->next = head;
+        head = temp;
       } else {
-        current = create(data, nullptr);
-        current->next = head;
-        head->prev = current;
-        head = current;
+        while (temp->next) {
+          if (temp->next->data.prior < data.prior) {
+            ITEM *t = create(data);
+            t->next = temp->next;
+            temp->next = t;
+            break;
+          } else {
+            temp = temp->next;
+          }
+        }
+      }
+      if (!temp->next) {
+        tail->next = create(data);
+        tail = tail->next;
       }
     } else {
-      head = create(data, nullptr);
+      head = create(data);
       tail = head;
     }
   }
   T pop() {
-    assert(head);
-    ITEM* temp = head->next;
+    ITEM *temp = head->next;
     T data = head->data;
-    if (temp) temp->prev = nullptr;
     delete head;
     head = temp;
     return data;
   }
 };
+
 struct SYM {
   char ch;
   int prior;
 };
+
 #endif  // INCLUDE_TPQUEUE_H_
